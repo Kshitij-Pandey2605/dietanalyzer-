@@ -5,7 +5,7 @@ import User from '../models/User.js';
 // @access  Private
 export const updateProfile = async (req, res) => {
     try {
-        const { age, height, weight, gender, activityLevel, fitnessGoal, targetWeight } = req.body;
+        const { age, height, weight, gender, activityLevel, fitnessGoal, targetWeight, dietPreference } = req.body;
 
         const user = await User.findById(req.user._id);
 
@@ -17,6 +17,7 @@ export const updateProfile = async (req, res) => {
             user.activityLevel = activityLevel || user.activityLevel;
             user.fitnessGoal = fitnessGoal || user.fitnessGoal;
             user.targetWeight = targetWeight || user.targetWeight;
+            user.dietPreference = dietPreference || user.dietPreference;
 
             const updatedUser = await user.save();
 

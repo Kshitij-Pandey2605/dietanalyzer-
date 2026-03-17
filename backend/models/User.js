@@ -37,6 +37,11 @@ const userSchema = new mongoose.Schema({
         enum: ['Lose Fat', 'Maintain Health', 'Gain Muscle'],
     },
     targetWeight: Number,
+    dietPreference: {
+        type: String,
+        enum: ['Vegetarian', 'Non-Vegetarian'],
+        default: 'Non-Vegetarian',
+    },
 }, { timestamps: true });
 
 // Hash password before saving

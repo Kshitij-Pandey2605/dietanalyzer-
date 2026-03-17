@@ -2,25 +2,39 @@ import DietPlan from '../models/DietPlan.js';
 import User from '../models/User.js';
 
 // Helper function
-const generateDietPlanLogic = (goal, category) => {
+const generateDietPlanLogic = (goal, preference) => {
+    const isVeg = preference === 'Vegetarian';
     let plan = {};
+    
     if (goal === 'Lose Fat') {
         plan = {
-            breakfast: { name: 'Oatmeal with Berries', calories: 350, protein: 12, carbs: 55, fats: 8 },
-            lunch: { name: 'Grilled Chicken Salad', calories: 450, protein: 40, carbs: 15, fats: 20 },
-            dinner: { name: 'Baked Salmon with Asparagus', calories: 400, protein: 35, carbs: 10, fats: 22 },
-            snacks: { name: 'Greek Yogurt or Roasted Chickpeas', calories: 150, protein: 15, carbs: 10, fats: 2 },
+            breakfast: isVeg 
+                ? { name: 'Greek Yogurt with Chia Seeds & Berries', calories: 300, protein: 20, carbs: 35, fats: 8 }
+                : { name: 'Oatmeal with Berries', calories: 350, protein: 12, carbs: 55, fats: 8 },
+            lunch: isVeg
+                ? { name: 'Paneer Tofu Salad with Greens', calories: 400, protein: 30, carbs: 15, fats: 25 }
+                : { name: 'Grilled Chicken Salad', calories: 450, protein: 40, carbs: 15, fats: 20 },
+            dinner: isVeg
+                ? { name: 'Lentil & Vegetable Soup', calories: 350, protein: 22, carbs: 45, fats: 10 }
+                : { name: 'Baked Salmon with Asparagus', calories: 400, protein: 35, carbs: 10, fats: 22 },
+            snacks: { name: 'Roasted Chickpeas or Almonds', calories: 150, protein: 8, carbs: 15, fats: 10 },
             focus: 'Calorie Deficit & High Protein',
-            totalCalories: 1350
+            totalCalories: isVeg ? 1200 : 1350
         };
     } else if (goal === 'Gain Muscle') {
         plan = {
-            breakfast: { name: 'Scrambled Eggs & Avocado Toast', calories: 550, protein: 25, carbs: 45, fats: 30 },
-            lunch: { name: 'Chicken, Rice and Broccoli', calories: 700, protein: 45, carbs: 80, fats: 15 },
-            dinner: { name: 'Beef Stir Fry with Noodles', calories: 650, protein: 40, carbs: 70, fats: 20 },
+            breakfast: isVeg
+                ? { name: 'Protein Pancakes with Peanut Butter', calories: 500, protein: 30, carbs: 55, fats: 20 }
+                : { name: 'Scrambled Eggs & Avocado Toast', calories: 550, protein: 25, carbs: 45, fats: 30 },
+            lunch: isVeg
+                ? { name: 'Quinoa & Black Bean Power Bowl', calories: 650, protein: 28, carbs: 90, fats: 15 }
+                : { name: 'Chicken, Rice and Broccoli', calories: 700, protein: 45, carbs: 80, fats: 15 },
+            dinner: isVeg
+                ? { name: 'Paneer Butter Masala with Brown Rice', calories: 600, protein: 25, carbs: 70, fats: 25 }
+                : { name: 'Beef Stir Fry with Noodles', calories: 650, protein: 40, carbs: 70, fats: 20 },
             snacks: { name: 'Protein Shake and Banana', calories: 300, protein: 30, carbs: 40, fats: 5 },
             focus: 'Calorie Surplus & High Protein/Carbs',
-            totalCalories: 2200
+            totalCalories: isVeg ? 2050 : 2200
         };
     } else {
         plan = {
