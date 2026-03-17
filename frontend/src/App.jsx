@@ -14,7 +14,7 @@ import Settings from './pages/Settings';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+      <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />

@@ -26,18 +26,18 @@ const WorkoutPlan = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8">
-      <div className="flex justify-between items-end">
+      <div className="flex justify-between items-end animate-premium">
         <div>
-          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">Daily Training</h1>
-          <p className="text-gray-500 mt-2">Tailored exercises based on your fitness goals</p>
+          <h1 className="text-4xl font-extrabold text-[var(--foreground)]">Daily Training</h1>
+          <p className="text-[var(--muted-foreground)] mt-2">Tailored exercises based on your fitness goals</p>
         </div>
         <div className="hidden md:flex gap-4">
-            <div className="text-center px-4 py-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
-                <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Est. Time</p>
+            <div className="premium-card px-4 py-2 glass dark:glass-dark animate-premium">
+                <p className="text-xs text-[var(--muted-foreground)] font-bold uppercase tracking-widest">Est. Time</p>
                 <p className="font-bold text-lg">~45m</p>
             </div>
-            <div className="text-center px-4 py-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
-                <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Difficulty</p>
+            <div className="premium-card px-4 py-2 glass dark:glass-dark animate-premium" style={{ animationDelay: '100ms' }}>
+                <p className="text-xs text-[var(--muted-foreground)] font-bold uppercase tracking-widest">Difficulty</p>
                 <p className="font-bold text-lg">Med</p>
             </div>
         </div>
@@ -45,14 +45,14 @@ const WorkoutPlan = () => {
 
       <div className="space-y-4">
         {workouts.map((exo, idx) => (
-          <div key={idx} className="group bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-green-500 dark:hover:border-green-500 transition-all flex items-center justify-between">
+          <div key={idx} className="group premium-card glass p-5 animate-premium flex items-center justify-between" style={{ animationDelay: `${(idx + 2) * 100}ms` }}>
             <div className="flex items-center gap-5">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center text-green-600 dark:text-green-400 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
                 <Dumbbell size={24} />
               </div>
               <div>
-                <h3 className="text-lg font-bold">{exo.name}</h3>
-                <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
+                <h3 className="text-lg font-bold text-[var(--foreground)]">{exo.name}</h3>
+                <div className="flex items-center gap-4 mt-1 text-sm text-[var(--muted-foreground)]">
                   <span className="flex items-center gap-1"><Timer size={14} /> {exo.duration}</span>
                   <span className="flex items-center gap-1"><Flame size={14} /> {exo.sets} Sets x {exo.reps}</span>
                 </div>
@@ -60,25 +60,28 @@ const WorkoutPlan = () => {
             </div>
             <div className="flex items-center gap-4">
                <span className={`hidden sm:inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                 exo.difficulty === 'Hard' ? 'bg-red-100 text-red-600' : 
-                 exo.difficulty === 'Medium' ? 'bg-orange-100 text-orange-600' : 
-                 'bg-green-100 text-green-600'
+                 exo.difficulty === 'Hard' ? 'bg-red-500/10 text-red-500' : 
+                 exo.difficulty === 'Medium' ? 'bg-orange-500/10 text-orange-500' : 
+                 'bg-green-500/10 text-green-500'
                }`}>
                  {exo.difficulty}
                </span>
-               <button className="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full transition">
-                  <PlayCircle size={28} className="text-green-600" />
+               <button className="p-2 hover:bg-[var(--muted)] rounded-full transition">
+                  <PlayCircle size={28} className="text-[var(--primary)]" />
                </button>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="p-6 bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl text-white shadow-xl shadow-green-500/20">
-         <h3 className="text-xl font-bold mb-2">Ready to start?</h3>
-         <p className="text-green-50 opacity-90 mb-6 max-w-md">Track your workout completion in the dashboard to maintain your streak and earn consistency points.</p>
-         <button className="bg-white text-green-700 px-8 py-3 rounded-xl font-bold hover:bg-green-50 transition flex items-center gap-2 group">
-            Start Workout <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+      <div className="p-8 bg-gradient-to-br from-[var(--primary)] to-emerald-700 rounded-[var(--radius)] text-white shadow-2xl relative overflow-hidden group animate-premium" style={{ animationDelay: '600ms' }}>
+         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Flame size={160} />
+         </div>
+         <h3 className="text-2xl font-bold mb-2 relative z-10">Ready to start?</h3>
+         <p className="text-green-50 opacity-90 mb-8 max-w-md relative z-10">Track your workout completion in the dashboard to maintain your streak and earn consistency points.</p>
+         <button className="bg-white text-[var(--primary)] px-10 py-4 rounded-2xl font-bold hover:bg-green-50 transition-all flex items-center gap-2 group relative z-10 hover:shadow-xl active:scale-95">
+            Start Workout <ChevronRight size={18} className="group-hover:translate-x-2 transition-transform" />
          </button>
       </div>
     </div>

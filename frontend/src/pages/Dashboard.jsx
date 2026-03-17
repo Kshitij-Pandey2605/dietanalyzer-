@@ -73,18 +73,18 @@ const Dashboard = () => {
 
   if (loading) return <div className="p-8 text-center text-xl">Analyzing your progress...</div>;
 
-  const StatCard = ({ title, value, subValue, icon: Icon, color, delay }) => (
+  const StatCard = ({ title, value, subValue, icon: Icon, gradient, delay }) => (
     <div 
-      className={`bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:-translate-y-1 transition-transform duration-300 animate-in fade-in slide-in-from-bottom flex flex-col justify-between`}
+      className={`premium-card glass p-6 flex flex-col justify-between animate-premium group`}
       style={{ animationDelay: delay }}
     >
       <div className="flex justify-between items-start">
         <div>
-          <p className="text-sm text-gray-500 font-medium">{title}</p>
-          <h3 className="text-3xl font-bold mt-1 text-gray-900 dark:text-white">{value}</h3>
-          {subValue && <p className="text-xs text-gray-400 mt-2 font-medium">{subValue}</p>}
+          <p className="text-sm text-[var(--muted-foreground)] font-medium">{title}</p>
+          <h3 className="text-3xl font-bold mt-1 text-[var(--foreground)]">{value}</h3>
+          {subValue && <p className="text-xs text-[var(--muted-foreground)] mt-2 font-medium">{subValue}</p>}
         </div>
-        <div className={`p-3 rounded-xl ${color} shadow-inner`}>
+        <div className={`p-3 rounded-2xl bg-gradient-to-br ${gradient} text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
           <Icon size={24} />
         </div>
       </div>
@@ -95,8 +95,8 @@ const Dashboard = () => {
     <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="animate-in fade-in slide-in-from-left duration-500">
-          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">Fitness Dashboard</h1>
-          <p className="text-gray-500 mt-1">{getGreeting()}! Here's your health summary.</p>
+          <h1 className="text-4xl font-extrabold text-[var(--foreground)]">Fitness Dashboard</h1>
+          <p className="text-[var(--muted-foreground)] mt-1">{getGreeting()}! Here's your health summary.</p>
         </div>
         <button 
           onClick={() => setShowLogForm(!showLogForm)}
@@ -107,9 +107,9 @@ const Dashboard = () => {
       </div>
 
       {showLogForm && (
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-green-200 dark:border-green-900/30 animate-in fade-in slide-in-from-top-4">
-          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-            <Clock className="text-green-600" /> Log Today's Metrics
+        <div className="premium-card p-8 glass dark:glass-dark animate-premium">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-[var(--foreground)]">
+            <Clock className="text-[var(--primary)]" /> Log Today's Metrics
           </h2>
           <form onSubmit={handleLogSubmit} className="grid md:grid-cols-4 gap-6">
             <div>
@@ -118,7 +118,7 @@ const Dashboard = () => {
                 type="number" 
                 step="0.1"
                 required
-                className="w-full p-3 border rounded-xl dark:bg-gray-700 dark:border-gray-600"
+                className="w-full p-3 glass dark:glass-dark border border-[var(--border)] rounded-xl outline-none focus:ring-2 focus:ring-[var(--primary)] text-[var(--foreground)]"
                 value={formData.weight}
                 onChange={(e) => setFormData({...formData, weight: e.target.value})}
               />
@@ -166,7 +166,7 @@ const Dashboard = () => {
           value={`${stats?.currentWeight || '--'} kg`} 
           subValue={`Target: ${stats?.targetWeight || '--'} kg`}
           icon={Activity} 
-          color="bg-blue-100 dark:bg-blue-900/30 text-blue-600"
+          gradient="from-blue-500 to-indigo-600"
           delay="0ms"
         />
         <StatCard 
@@ -174,7 +174,7 @@ const Dashboard = () => {
           value={`${stats?.streak || 0} Days`} 
           subValue="Keep the fire burning!"
           icon={Flame} 
-          color="bg-orange-100 dark:bg-orange-900/30 text-orange-600"
+          gradient="from-orange-500 to-red-600"
           delay="100ms"
         />
         <StatCard 
@@ -182,7 +182,7 @@ const Dashboard = () => {
           value={`${stats?.progressPercentage || 0}%`} 
           subValue="You're getting closer"
           icon={Trophy} 
-          color="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600"
+          gradient="from-yellow-400 to-orange-500"
           delay="200ms"
         />
         <StatCard 
@@ -190,14 +190,14 @@ const Dashboard = () => {
           value="82/100" 
           subValue="Excellent Consistency"
           icon={Target} 
-          color="bg-green-100 dark:bg-green-900/30 text-green-600"
+          gradient="from-green-500 to-emerald-600"
           delay="300ms"
         />
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-           <h3 className="text-xl font-bold mb-6">Weight Progression</h3>
+        <div className="lg:col-span-2 premium-card glass p-8 animate-premium">
+           <h3 className="text-xl font-bold mb-6 text-[var(--foreground)]">Weight Progression</h3>
            <div className="h-64 flex items-end justify-between gap-2">
              {stats?.history?.slice(-10).map((log, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
@@ -228,8 +228,8 @@ const Dashboard = () => {
               </div>
            </div>
 
-           <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-              <h3 className="font-bold mb-4 flex items-center gap-2"><Droplet className="text-blue-500" /> Daily Reminders</h3>
+           <div className="premium-card p-6 glass dark:glass-dark">
+              <h3 className="font-bold mb-4 flex items-center gap-2 text-[var(--foreground)]"><Droplet className="text-blue-500" /> Daily Reminders</h3>
               <ul className="space-y-4">
                  <li className="flex items-center justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">Water Intake Goal</span>

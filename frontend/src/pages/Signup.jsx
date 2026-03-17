@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, UserPlus, User } from 'lucide-react';
+import { Mail, Lock, UserPlus, User, ChevronRight } from 'lucide-react';
 
 const Signup = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
@@ -33,15 +33,15 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[85vh] px-4">
+    <div className="flex items-center justify-center min-h-[85vh] px-4 animate-premium">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl shadow-gray-200/50 dark:shadow-black/30 p-8 md:p-10 border border-gray-100 dark:border-gray-700">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900/40 rounded-2xl mb-4">
-              <UserPlus className="text-green-600" size={28} />
+        <div className="premium-card p-10 glass dark:glass-dark shadow-2xl shadow-[var(--primary)]/5">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--primary)] to-emerald-600 rounded-2xl mb-6 shadow-lg text-white">
+              <UserPlus size={32} />
             </div>
-            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">Create Account</h2>
-            <p className="text-gray-500 mt-2">Start your health transformation today</p>
+            <h2 className="text-4xl font-black text-[var(--foreground)] tracking-tight">New Entity</h2>
+            <p className="text-[var(--muted-foreground)] mt-2 font-medium">Initiate your biological transformation</p>
           </div>
 
           {error && (
@@ -97,11 +97,13 @@ const Signup = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-bold rounded-xl transition-all shadow-lg shadow-green-600/20 flex items-center justify-center gap-2"
+              className="btn-premium w-full flex items-center justify-center gap-3 py-4 text-lg"
             >
               {loading ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-              ) : 'Create Account'}
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+              ) : (
+                <>Initialize Transformation <ChevronRight size={20} /></>
+              )}
             </button>
           </form>
           <p className="text-sm text-center text-gray-500 mt-6">

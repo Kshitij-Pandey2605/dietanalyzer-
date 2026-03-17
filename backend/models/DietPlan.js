@@ -18,6 +18,10 @@ const dietPlanSchema = new mongoose.Schema({
         type: String,
         enum: ['Lose Fat', 'Maintain Health', 'Gain Muscle'],
     },
+    dietPreference: {
+        type: String,
+        enum: ['Vegetarian', 'Non-Vegetarian'],
+    },
     focus: String,
     breakfast: mealSchema,
     lunch: mealSchema,

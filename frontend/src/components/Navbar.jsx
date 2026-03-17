@@ -8,56 +8,52 @@ const Navbar = () => {
   const { darkMode, toggleTheme } = useTheme();
 
   return (
-    <nav className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700 px-4 py-3 sticky top-0 z-50">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-2xl font-extrabold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
+    <nav className="glass sticky top-0 z-50 px-6 py-4 flex items-center justify-between transition-all duration-300">
+      <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <Link to="/" className="text-3xl font-black bg-gradient-to-r from-[var(--primary)] to-emerald-400 bg-clip-text text-transparent tracking-tighter hover:scale-105 transition-transform">
           FitLife AI
         </Link>
 
         <div className="flex items-center space-x-3 md:space-x-5">
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+            className="p-2 rounded-full hover:bg-[var(--muted)] transition-colors"
           >
             {darkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-gray-600" />}
           </button>
 
           {user ? (
             <>
-              <Link to="/" className="flex items-center space-x-1 text-gray-700 dark:text-gray-200 hover:text-green-600 transition" title="Home">
-                <Home size={18} />
-                <span className="hidden xl:inline text-sm font-medium">Home</span>
+              <Link to="/" className="flex items-center space-x-2 text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-all font-semibold" title="Home">
+                <Home size={20} />
+                <span className="hidden xl:inline text-sm">Home</span>
               </Link>
-              <Link to="/dashboard" className="flex items-center space-x-1 text-gray-700 dark:text-gray-200 hover:text-green-600 transition" title="Dashboard">
-                <LayoutDashboard size={18} />
-                <span className="hidden xl:inline text-sm font-medium">Dashboard</span>
+              <Link to="/dashboard" className="flex items-center space-x-2 text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-all font-semibold" title="Dashboard">
+                <LayoutDashboard size={20} />
+                <span className="hidden xl:inline text-sm">Dashboard</span>
               </Link>
-              <Link to="/diet" className="flex items-center space-x-1 text-gray-700 dark:text-gray-200 hover:text-green-600 transition" title="Diet">
-                <Utensils size={18} />
-                <span className="hidden xl:inline text-sm font-medium">Diet</span>
+              <Link to="/diet" className="flex items-center space-x-2 text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-all font-semibold" title="Diet">
+                <Utensils size={20} />
+                <span className="hidden xl:inline text-sm">Diet</span>
               </Link>
-              <Link to="/workout" className="flex items-center space-x-1 text-gray-700 dark:text-gray-200 hover:text-green-600 transition" title="Workout">
-                <Dumbbell size={18} />
-                <span className="hidden xl:inline text-sm font-medium">Workout</span>
+              <Link to="/workout" className="flex items-center space-x-2 text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-all font-semibold" title="Workout">
+                <Dumbbell size={20} />
+                <span className="hidden xl:inline text-sm">Workout</span>
               </Link>
-              <Link to="/history" className="flex items-center space-x-1 text-gray-700 dark:text-gray-200 hover:text-green-600 transition" title="History">
-                <Calendar size={18} />
-                <span className="hidden xl:inline text-sm font-medium">History</span>
+              <Link to="/history" className="flex items-center space-x-2 text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-all font-semibold" title="History">
+                <Calendar size={20} />
+                <span className="hidden xl:inline text-sm">History</span>
               </Link>
-              <Link to="/profile" className="flex items-center space-x-1 text-gray-700 dark:text-gray-200 hover:text-green-600 transition" title="Profile">
-                <UserIcon size={18} />
-                <span className="hidden xl:inline text-sm font-medium">Profile</span>
-              </Link>
-              <Link to="/settings" className="flex items-center space-x-1 text-gray-700 dark:text-gray-200 hover:text-green-600 transition" title="Settings">
-                <Settings size={18} />
-                <span className="hidden xl:inline text-sm font-medium">Settings</span>
+              <Link to="/profile" className="flex items-center space-x-2 text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-all font-semibold" title="Profile">
+                <UserIcon size={20} />
+                <span className="hidden xl:inline text-sm">Profile</span>
               </Link>
               <button
                 onClick={logout}
-                className="flex items-center space-x-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg transition"
+                className="flex items-center space-x-2 text-red-500 hover:bg-red-500/10 px-4 py-2 rounded-xl transition-all font-bold"
               >
-                <LogOut size={18} />
-                <span className="hidden md:inline text-sm font-medium">Logout</span>
+                <LogOut size={20} />
+                <span className="hidden md:inline text-sm">Exit</span>
               </button>
             </>
           ) : (

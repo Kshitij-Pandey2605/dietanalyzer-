@@ -13,6 +13,7 @@ const Profile = () => {
     activityLevel: user?.activityLevel || 'Moderately Active',
     fitnessGoal: user?.fitnessGoal || 'Maintain Health',
     targetWeight: user?.targetWeight || '',
+    dietPreference: user?.dietPreference || 'Non-Vegetarian',
   });
 
   const [metrics, setMetrics] = useState(null);
@@ -58,13 +59,14 @@ const Profile = () => {
   const fitnessGoals = ['Lose Fat', 'Maintain Health', 'Gain Muscle'];
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8">
-      <h1 className="text-3xl font-bold flex items-center gap-2">
-        <UserIcon className="text-green-600" /> My Health Profile
-      </h1>
+    <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-10">
+      <div className="animate-premium">
+        <h1 className="text-4xl font-black text-[var(--foreground)] tracking-tight">Biological Identity</h1>
+        <p className="text-[var(--muted-foreground)] mt-2 font-medium">Configure your physiological parameters for AI optimization</p>
+      </div>
 
-      <div className="grid md:grid-cols-3 gap-8">
-        <div className="md:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+      <div className="grid lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 premium-card p-8 glass dark:glass-dark animate-premium">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -155,36 +157,48 @@ const Profile = () => {
               </div>
             </div>
 
+            <div>
+              <label className="block text-sm font-medium mb-1">Diet Preference</label>
+              <select
+                className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+                value={formData.dietPreference}
+                onChange={(e) => setFormData({ ...formData, dietPreference: e.target.value })}
+              >
+                <option value="Non-Vegetarian">Non-Vegetarian</option>
+                <option value="Vegetarian">Vegetarian</option>
+              </select>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-green-600 text-white py-2 rounded font-bold hover:bg-green-700 flex items-center justify-center gap-2 transition"
+              className="btn-premium w-full py-4 text-lg shadow-xl shadow-[var(--primary)]/20"
             >
-              {loading ? 'Saving...' : <><Save size={18} /> Save Profile</>}
+              {loading ? 'SYNCING...' : <><Save size={20} /> PERSIST ENTITY DATA</>}
             </button>
             {message && <p className={`text-center text-sm ${message.includes('Error') ? 'text-red-500' : 'text-green-500'}`}>{message}</p>}
           </form>
         </div>
 
         <div className="space-y-6">
-          <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-100 dark:border-green-900/50">
-            <h2 className="text-xl font-bold mb-4">Current Status</h2>
+          <div className="premium-card p-8 glass dark:glass-dark animate-premium" style={{ animationDelay: '100ms' }}>
+            <h2 className="text-2xl font-black mb-6 text-[var(--foreground)]">Atmospheric Metrics</h2>
             {metrics ? (
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">BMI</p>
-                  <p className="text-2xl font-bold text-green-700 dark:text-green-400">{metrics.bmi}</p>
-                  <p className="inline-block px-2 py-0.5 mt-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-xs uppercase font-bold tracking-wider">
+              <div className="space-y-6">
+                <div className="p-4 glass rounded-2xl border border-[var(--border)]">
+                  <p className="text-xs font-black uppercase tracking-widest text-[var(--muted-foreground)]">Body Mass Index</p>
+                  <p className="text-4xl font-serif font-bold text-[var(--primary)] mt-1">{metrics.bmi}</p>
+                  <p className="inline-block px-3 py-1 mt-3 bg-[var(--primary)]/10 text-[var(--primary)] rounded-full text-xs uppercase font-black tracking-widest">
                     {metrics.category}
                   </p>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Recommended Daily Intake</p>
-                  <p className="text-2xl font-bold text-green-700 dark:text-green-400">{metrics.dailyCalories} kcal</p>
+                <div className="p-4 glass rounded-2xl border border-[var(--border)]">
+                  <p className="text-xs font-black uppercase tracking-widest text-[var(--muted-foreground)]">Metabolic Intake Target</p>
+                  <p className="text-4xl font-serif font-bold text-[var(--primary)] mt-1">{metrics.dailyCalories} <span className="text-xl">kcal</span></p>
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-gray-500 italic">Complete your profile to see your health metrics.</p>
+              <p className="text-[var(--muted-foreground)] italic font-medium">Complete your biological profile to unlock neural metrics.</p>
             )}
           </div>
           
