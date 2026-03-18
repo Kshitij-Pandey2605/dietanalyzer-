@@ -11,6 +11,7 @@ import {
   Droplet, 
   Target
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import Logo from '../components/Logo';
 
 const motivationalQuotes = [
@@ -21,15 +22,16 @@ const motivationalQuotes = [
 ];
 
 const Dashboard = () => {
+  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [quoteIndex, setQuoteIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showLogForm, setShowLogForm] = useState(false);
+  const [todayWorkoutDone, setTodayWorkoutDone] = useState(null); // null = unknown
   const [formData, setFormData] = useState({
     weight: '',
     caloriesConsumed: '',
     waterIntake: '',
-    workoutCompleted: false
   });
 
   useEffect(() => {
@@ -42,9 +44,9 @@ const Dashboard = () => {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 18) return 'Good Afternoon';
-    return 'Good Evening';
+    if (hour < 12) return { text: 'Good Morning', emoji: '🌅' };
+    if (hour < 18) return { text: 'Good Afternoon', emoji: '☀️' };
+    return { text: 'Good Evening', emoji: '🌙' };
   };
 
   const fetchStats = async () => {
@@ -53,6 +55,17 @@ const Dashboard = () => {
       setStats(data);
       if (data.currentWeight) {
           setFormData(prev => ({ ...prev, weight: data.currentWeight }));
+      }
+      // Detect if today's workout was already logged as done
+      if (data.history && data.history.length > 0) {
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const todayLog = data.history.find(log => {
+          const d = new Date(log.date); d.setHours(0,0,0,0);
+          return d.getTime() === today.getTime();
+        });
+        if (todayLog) setTodayWorkoutDone(todayLog.workoutCompleted);
+        else setTodayWorkoutDone(null);
       }
     } catch (err) {
       console.error('Failed to fetch stats');
@@ -95,10 +108,14 @@ const Dashboard = () => {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="animate-in fade-in slide-in-from-left duration-500">
-          <Logo className="mb-2 scale-90 origin-left" />
-          <h1 className="text-4xl font-extrabold text-[var(--foreground)]">Fitness Dashboard</h1>
-          <p className="text-[var(--muted-foreground)] mt-1">{getGreeting()}! Here's your health summary.</p>
+        <div className="animate-premium">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-2xl">{getGreeting().emoji}</span>
+            <span className="text-sm font-bold text-[var(--primary)] uppercase tracking-widest">{getGreeting().text}, {user?.name || 'User'}</span>
+            {todayWorkoutDone === true && <span className="text-sm font-bold text-green-500 hidden sm:inline">— Well Done 🔥</span>}
+          </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-[var(--foreground)]">Fitness Dashboard</h1>
+          <p className="text-[var(--muted-foreground)] mt-1 text-sm md:text-base">Your personalized health evolution summary.</p>
         </div>
         <button 
           onClick={() => setShowLogForm(!showLogForm)}
@@ -108,55 +125,55 @@ const Dashboard = () => {
         </button>
       </div>
 
+
       {showLogForm && (
-        <div className="premium-card p-8 glass dark:glass-dark animate-premium">
-          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-[var(--foreground)]">
-            <Clock className="text-[var(--primary)]" /> Log Today's Metrics
+        <div className="premium-card p-6 md:p-8 glass animate-premium">
+          {/* Keep Going banner — only if workout not done today */}
+          {todayWorkoutDone !== true && (
+            <div className="mb-6 flex items-center gap-4 p-4 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl text-white">
+              <Flame size={28} className="text-yellow-300 shrink-0" />
+              <div>
+                <p className="font-black">Keep Going! 💪</p>
+                <p className="text-orange-100 text-sm">Head to Training page to complete today's workout!</p>
+              </div>
+            </div>
+          )}
+          <h2 className="text-xl md:text-2xl font-bold mb-5 flex items-center gap-2 text-[var(--foreground)]">
+            <Clock className="text-[var(--primary)]" /> {getGreeting().text}, {user?.name?.split(' ')[0] || 'User'}!
           </h2>
-          <form onSubmit={handleLogSubmit} className="grid md:grid-cols-4 gap-6">
+          <form onSubmit={handleLogSubmit} className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Weight (kg)</label>
+              <label className="block text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-1.5">Weight (kg)</label>
               <input 
-                type="number" 
-                step="0.1"
-                required
-                className="w-full p-3 glass dark:glass-dark border border-[var(--border)] rounded-xl outline-none focus:ring-2 focus:ring-[var(--primary)] text-[var(--foreground)]"
+                type="number" step="0.1" required
+                className="w-full p-3 border border-[var(--border)] bg-white text-gray-900 dark:bg-gray-700 dark:text-white rounded-xl outline-none focus:ring-2 focus:ring-[var(--primary)]"
                 value={formData.weight}
                 onChange={(e) => setFormData({...formData, weight: e.target.value})}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Calories Consumed</label>
+              <label className="block text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-1.5">Calories Consumed</label>
               <input 
-                type="number" 
-                className="w-full p-3 border rounded-xl dark:bg-gray-700 dark:border-gray-600"
+                type="number"
+                className="w-full p-3 border border-[var(--border)] bg-white text-gray-900 dark:bg-gray-700 dark:text-white rounded-xl"
                 value={formData.caloriesConsumed}
                 onChange={(e) => setFormData({...formData, caloriesConsumed: e.target.value})}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Water (Liters)</label>
+              <label className="block text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-1.5">Water (Liters)</label>
               <input 
-                type="number" 
-                step="0.1"
-                className="w-full p-3 border rounded-xl dark:bg-gray-700 dark:border-gray-600"
+                type="number" step="0.1"
+                className="w-full p-3 border border-[var(--border)] bg-white text-gray-900 dark:bg-gray-700 dark:text-white rounded-xl"
                 value={formData.waterIntake}
                 onChange={(e) => setFormData({...formData, waterIntake: e.target.value})}
               />
             </div>
-            <div className="flex flex-col justify-end">
-              <label className="flex items-center gap-3 cursor-pointer select-none mb-3">
-                <input 
-                  type="checkbox" 
-                  className="w-5 h-5 accent-green-600"
-                  checked={formData.workoutCompleted}
-                  onChange={(e) => setFormData({...formData, workoutCompleted: e.target.checked})}
-                />
-                <span className="text-sm font-medium">Workout Completed Today</span>
-              </label>
-              <button type="submit" className="w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition">
+            <div className="sm:col-span-2 md:col-span-3">
+              <button type="submit" className="w-full bg-[var(--primary)] text-white py-3 rounded-xl font-bold hover:bg-[var(--primary-hover)] transition">
                 Save Daily Log
               </button>
+              <p className="text-xs text-[var(--muted-foreground)] mt-2 text-center">Workout status is tracked automatically from the Training page 🏋️</p>
             </div>
           </form>
         </div>
@@ -174,7 +191,7 @@ const Dashboard = () => {
         <StatCard 
           title="Workout Streak" 
           value={`${stats?.streak || 0} Days`} 
-          subValue="Keep the fire burning!"
+          subValue={todayWorkoutDone === true ? '🔥 Keep the fire burning!' : todayWorkoutDone === false ? '⚡ Complete today to grow!' : 'Log your workout!'}
           icon={Flame} 
           gradient="from-orange-500 to-red-600"
           delay="100ms"
@@ -213,20 +230,18 @@ const Dashboard = () => {
 
         <div className="space-y-6">
            <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-6 rounded-2xl text-white shadow-xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
                 <Flame size={120} />
               </div>
               <h3 className="font-bold text-lg mb-2 relative z-10 flex items-center gap-2">
-                <Flame className="text-orange-400 animate-pulse" /> Daily Motivation
+                <Flame className="text-orange-400 animate-pulse" /> Next Milestone
               </h3>
-              <p className="opacity-90 italic min-h-[3rem] relative z-10 animate-in fade-in slide-in-from-bottom-2 duration-700">
-                "{motivationalQuotes[quoteIndex]}"
-              </p>
-              <div className="mt-6 flex items-center justify-between relative z-10">
-                <p className="text-sm font-bold opacity-80 uppercase tracking-widest">Next Milestone</p>
-                <div className="h-2 w-24 bg-white/20 rounded-full overflow-hidden">
-                   <div className="h-full bg-white w-[65%] animate-pulse"></div>
+              <div className="mt-2 relative z-10">
+                <p className="text-sm opacity-80 mb-2">{todayWorkoutDone ? 'Streak maintained! Keep going 🔥' : 'Complete today\'s workout to grow streak'}</p>
+                <div className="h-2 w-full bg-white/20 rounded-full overflow-hidden">
+                   <div className="h-full bg-white transition-all duration-700" style={{ width: `${Math.min(100, (stats?.streak || 0) * 10)}%` }}></div>
                 </div>
+                <p className="text-xs mt-1 opacity-70">{stats?.streak || 0} day streak</p>
               </div>
            </div>
 

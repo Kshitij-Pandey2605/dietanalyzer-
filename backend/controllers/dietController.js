@@ -9,19 +9,26 @@ export const getDietPlan = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
         
-        // Match today's date
-        const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0);
-        const endOfDay = new Date();
-        endOfDay.setHours(23, 59, 59, 999);
+        // Find the most recent diet plan for this user
+        let dietPlan = await DietPlan.findOne({ user: req.user._id }).sort({ createdAt: -1 });
 
-        let dietPlan = await DietPlan.findOne({ 
-            user: req.user._id,
-            date: { $gte: startOfDay, $lte: endOfDay }
-        });
+        const isToday = (date) => {
+            const d = new Date(date);
+            const now = new Date();
+            return d.getDate() === now.getDate() && 
+                   d.getMonth() === now.getMonth() && 
+                   d.getFullYear() === now.getFullYear();
+        };
 
-        // Generate a new one if it doesn't exist for today or if settings changed
-        if (!dietPlan || dietPlan.goal !== user.fitnessGoal || dietPlan.dietPreference !== user.dietPreference) {
+        let shouldGenerate = !dietPlan || !isToday(dietPlan.createdAt);
+        
+        // Also regenerate if goal/preference changed
+        if (!shouldGenerate) {
+            if (user.fitnessGoal && dietPlan.goal !== user.fitnessGoal) shouldGenerate = true;
+            if (user.dietPreference && dietPlan.dietPreference !== user.dietPreference) shouldGenerate = true;
+        }
+
+        if (shouldGenerate) {
             if (!user.fitnessGoal) {
                 return res.status(400).json({ message: 'Please complete your profile first' });
             }
@@ -85,12 +92,30 @@ export const regenerateMeal = async (req, res) => {
                 alternatives: newAlternatives
             };
 
-            // Recalculate total calories
+            // Recalculate total calories and macros
             dietPlan.totalCalories = 
                 dietPlan.breakfast.selected.calories + 
                 dietPlan.lunch.selected.calories + 
                 dietPlan.dinner.selected.calories + 
                 dietPlan.snacks.selected.calories;
+            
+            dietPlan.totalProtein = 
+                dietPlan.breakfast.selected.protein + 
+                dietPlan.lunch.selected.protein + 
+                dietPlan.dinner.selected.protein + 
+                dietPlan.snacks.selected.protein;
+            
+            dietPlan.totalCarbs = 
+                dietPlan.breakfast.selected.carbs + 
+                dietPlan.lunch.selected.carbs + 
+                dietPlan.dinner.selected.carbs + 
+                dietPlan.snacks.selected.carbs;
+            
+            dietPlan.totalFats = 
+                dietPlan.breakfast.selected.fats + 
+                dietPlan.lunch.selected.fats + 
+                dietPlan.dinner.selected.fats + 
+                dietPlan.snacks.selected.fats;
 
             await dietPlan.save();
         }

@@ -14,8 +14,9 @@ import Settings from './pages/Settings';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
+      <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300 flex flex-col overflow-x-hidden max-w-full">
         <Navbar />
+        <main className="flex-1 has-bottom-nav overflow-x-hidden">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -27,6 +28,7 @@ function App() {
           <Route path="/history" element={<History />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
+        </main>
       </div>
     </Router>
   );

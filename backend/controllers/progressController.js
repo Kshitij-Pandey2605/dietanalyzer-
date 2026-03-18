@@ -132,20 +132,27 @@ export const getStats = async (req, res) => {
             progressPercentage = Math.min(100, Math.max(0, Math.round(((startWeight - currentWeight) / (startWeight - targetWeight)) * 100)));
         }
 
-        // Calculate Streak
+        // Calculate Streak — resets to 0 if a day is missed
         let streak = 0;
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
+
+        // Walk backwards from today to count consecutive completed days
         for (let i = logs.length - 1; i >= 0; i--) {
             const logDate = new Date(logs[i].date);
             logDate.setHours(0, 0, 0, 0);
-            
-            const diffInDays = Math.floor((today - logDate) / (1000 * 60 * 60 * 24));
-            
+            const diffInDays = Math.round((today - logDate) / (1000 * 60 * 60 * 24));
+
             if (diffInDays === streak) {
-                if (logs[i].workoutCompleted) streak++;
+                // This log is for the expected day in the streak
+                if (logs[i].workoutCompleted) {
+                    streak++;
+                } else {
+                    // Day exists but workout was missed — streak resets
+                    break;
+                }
             } else if (diffInDays > streak) {
+                // Gap in days means a day was skipped — streak resets
                 break;
             }
         }

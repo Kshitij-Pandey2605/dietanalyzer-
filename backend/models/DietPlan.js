@@ -38,6 +38,9 @@ const dietPlanSchema = new mongoose.Schema({
     dinner: mealOptionSchema,
     snacks: mealOptionSchema,
     totalCalories: Number,
+    totalProtein: Number,
+    totalCarbs: Number,
+    totalFats: Number,
 }, { timestamps: true });
 
 const DietPlan = mongoose.model('DietPlan', dietPlanSchema);

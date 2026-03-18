@@ -17,6 +17,11 @@ const getLogs = async (params) => {
   return response.data;
 };
 
+const getHistory = async (page = 1, extraParams = {}) => {
+  const response = await api.get(API_URL, { params: { page, ...extraParams } });
+  return response.data;
+};
+
 const getStats = async () => {
   const response = await api.get(`${API_URL}/stats`);
   return response.data;
@@ -29,8 +34,10 @@ const deleteLog = async (id) => {
 const progressService = {
   createLog,
   getLogs,
+  getHistory,
   getStats,
   deleteLog,
 };
+
 
 export default progressService;

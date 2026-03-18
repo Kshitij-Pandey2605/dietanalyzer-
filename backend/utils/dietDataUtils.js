@@ -143,6 +143,9 @@ export const generateDietPlanLogic = (goal, category, preference) => {
                        goal === 'Gain Muscle' ? 'Calorie Surplus & High Protein/Carbs' : 'Balanced Nutrition & Maintenance';
                        
     const totalCalories = bf.selected.calories + lun.selected.calories + din.selected.calories + snk.selected.calories;
+    const totalProtein = bf.selected.protein + lun.selected.protein + din.selected.protein + snk.selected.protein;
+    const totalCarbs = bf.selected.carbs + lun.selected.carbs + din.selected.carbs + snk.selected.carbs;
+    const totalFats = bf.selected.fats + lun.selected.fats + din.selected.fats + snk.selected.fats;
 
     return {
         breakfast: bf,
@@ -150,6 +153,9 @@ export const generateDietPlanLogic = (goal, category, preference) => {
         dinner: din,
         snacks: snk,
         focus: focusLabel,
-        totalCalories
+        totalCalories,
+        totalProtein,
+        totalCarbs,
+        totalFats
     };
 };

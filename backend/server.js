@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middlewares
 app.use(cors({
-    origin: 'http://localhost:5174',
+    origin: 'http://localhost:5175',
     credentials: true
 }));
 app.use(express.json());
