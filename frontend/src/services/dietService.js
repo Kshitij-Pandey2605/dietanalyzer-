@@ -6,7 +6,7 @@ const API = axios.create({
   withCredentials: true,
 });
 
-const DIET_URL = '/diet';
+const DIET_URL = 'diet';
 
 const getDietPlan = async () => {
   const response = await API.get(DIET_URL);

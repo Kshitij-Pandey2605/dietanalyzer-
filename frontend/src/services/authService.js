@@ -6,7 +6,7 @@ const API = axios.create({
   withCredentials: true,
 });
 
-const AUTH_URL = '/auth';
+const AUTH_URL = 'auth';
 
 const signup = async (userData) => {
   const response = await API.post(`${AUTH_URL}/signup`, userData);

@@ -6,7 +6,7 @@ const API = axios.create({
   withCredentials: true,
 });
 
-const WORKOUT_URL = '/workout';
+const WORKOUT_URL = 'workout';
 
 const getWorkoutPlan = async () => {
   const response = await API.get(WORKOUT_URL);

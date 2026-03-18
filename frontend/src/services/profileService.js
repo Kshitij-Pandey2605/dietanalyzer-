@@ -6,7 +6,7 @@ const API = axios.create({
   withCredentials: true,
 });
 
-const PROFILE_URL = '/profile';
+const PROFILE_URL = 'profile';
 
 const getMetrics = async () => {
     const response = await API.get(`${PROFILE_URL}/metrics`);

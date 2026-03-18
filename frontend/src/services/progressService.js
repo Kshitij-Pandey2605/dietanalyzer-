@@ -6,7 +6,7 @@ const API = axios.create({
   withCredentials: true,
 });
 
-const PROGRESS_URL = '/progress';
+const PROGRESS_URL = 'progress';
 
 const createLog = async (logData) => {
   const response = await API.post(PROGRESS_URL, logData);

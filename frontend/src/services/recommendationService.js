@@ -6,7 +6,7 @@ const API = axios.create({
   withCredentials: true,
 });
 
-const REC_URL = '/recommendations';
+const REC_URL = 'recommendations';
 
 const getRecommendations = async () => {
   const response = await API.get(REC_URL);
