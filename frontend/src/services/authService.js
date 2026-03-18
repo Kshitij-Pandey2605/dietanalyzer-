@@ -1,24 +1,25 @@
 import axios from 'axios';
+import API_URL from '../api/apiConfig';
 
-const API_URL = '/api/auth';
-
-const api = axios.create({
-  baseURL: 'http://localhost:5000',
+const API = axios.create({
+  baseURL: API_URL,
   withCredentials: true,
 });
 
+const AUTH_URL = '/auth';
+
 const signup = async (userData) => {
-  const response = await api.post(`${API_URL}/signup`, userData);
+  const response = await API.post(`${AUTH_URL}/signup`, userData);
   return response.data;
 };
 
 const login = async (userData) => {
-  const response = await api.post(`${API_URL}/login`, userData);
+  const response = await API.post(`${AUTH_URL}/login`, userData);
   return response.data;
 };
 
 const logout = async () => {
-  const response = await api.post(`${API_URL}/logout`);
+  const response = await API.post(`${AUTH_URL}/logout`);
   return response.data;
 };
 

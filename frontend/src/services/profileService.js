@@ -1,20 +1,21 @@
 import axios from 'axios';
+import API_URL from '../api/apiConfig';
 
-const API_URL = '/api/profile';
-
-const api = axios.create({
-  baseURL: 'http://localhost:5000',
+const API = axios.create({
+  baseURL: API_URL,
   withCredentials: true,
 });
 
-const updateProfile = async (profileData) => {
-  const response = await api.put(API_URL, profileData);
-  return response.data;
-};
+const PROFILE_URL = '/profile';
 
 const getMetrics = async () => {
-  const response = await api.get(`${API_URL}/metrics`);
-  return response.data;
+    const response = await API.get(`${PROFILE_URL}/metrics`);
+    return response.data;
+};
+
+const updateProfile = async (profileData) => {
+    const response = await API.put(PROFILE_URL, profileData);
+    return response.data;
 };
 
 const profileService = {

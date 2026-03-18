@@ -1,14 +1,15 @@
 import axios from 'axios';
+import API_URL from '../api/apiConfig';
 
-const API_URL = '/api/recommendations';
-
-const api = axios.create({
-  baseURL: 'http://localhost:5000',
+const API = axios.create({
+  baseURL: API_URL,
   withCredentials: true,
 });
 
+const REC_URL = '/recommendations';
+
 const getRecommendations = async () => {
-  const response = await api.get(API_URL);
+  const response = await API.get(REC_URL);
   return response.data;
 };
 
