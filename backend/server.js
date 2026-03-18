@@ -17,22 +17,25 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-
-// Middlewares
 const allowedOrigins = [
     'http://localhost:5175',
     'https://dietanalyzer-fitlife.netlify.app',
     'https://dietanalyzer.netlify.app',
+    'https://fitlife-ai-g4ye.onrender.com', // Added actual Render URL
     process.env.FRONTEND_URL
 ].filter(Boolean);
 
+// Permissive CORS for production launch
 app.use(cors({
-    origin: allowedOrigins,
+    origin: function(origin, callback) {
+        callback(null, true);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
+
+app.options('*', cors()); // Handle preflight for all routes
 app.use(express.json());
 app.use(cookieParser());
 
