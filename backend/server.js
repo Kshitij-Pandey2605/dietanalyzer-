@@ -26,17 +26,22 @@ const allowedOrigins = [
     process.env.FRONTEND_URL
 ].filter(Boolean);
 
-// Permissive CORS for production launch
+// ULTIMATE CORS FIX (MIRACLE MODE)
 app.use(cors({
     origin: function(origin, callback) {
+        // Mirror the incoming origin to satisfy credentials: true requirement
         callback(null, true);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }));
 
-app.options('*', cors()); // Handle preflight for all routes
+// Explicitly handle all OPTIONS requests globally
+app.options('*', cors());
+
 app.use(express.json());
 app.use(cookieParser());
 
