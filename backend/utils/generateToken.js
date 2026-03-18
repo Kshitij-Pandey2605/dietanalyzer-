@@ -7,8 +7,8 @@ const generateToken = (res, userId) => {
 
     res.cookie('jwt', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== 'development',
-        sameSite: 'strict',
+        secure: true, // Always secure for cross-site
+        sameSite: 'none', // Required for Netlify -> Render
         maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 };

@@ -16,30 +16,28 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// 1. ULTIMATE CORS CONFIG (MIRACLE MODE)
-const corsOptions = {
-    origin: function(origin, callback) {
-        // Mirror the incoming origin to satisfy credentials: true requirement
-        callback(null, true);
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-    preflightContinue: false,
-    optionsSuccessStatus: 204
-};
-
-// Apply CORS to ALL requests immediately
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
-
-// 2. Global Request Logger (For Render Debugging)
+// NUCLEAR CORS MIDDLEWARE (MANUAL HEADERS)
 app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Origin: ${req.headers.origin}`);
+    const origin = req.headers.origin;
+    // Mirror origin explicitly for credentials support
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    
+    // Handle Preflight (OPTIONS)
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(204);
+    }
     next();
 });
 
-// 3. Standard Middlewares
+// Diagnostic Logger
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+});
+
 app.use(express.json());
 app.use(cookieParser());
 
