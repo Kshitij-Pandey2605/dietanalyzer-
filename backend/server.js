@@ -18,16 +18,9 @@ connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const allowedOrigins = [
-    'http://localhost:5175',
-    'https://dietanalyzer-fitlife.netlify.app',
-    'https://dietanalyzer.netlify.app',
-    'https://fitlife-ai-g4ye.onrender.com', // Added actual Render URL
-    process.env.FRONTEND_URL
-].filter(Boolean);
 
-// ULTIMATE CORS FIX (MIRACLE MODE)
-app.use(cors({
+// ULTIMATE CORS CONFIG (MIRACLE MODE)
+const corsOptions = {
     origin: function(origin, callback) {
         // Mirror the incoming origin to satisfy credentials: true requirement
         callback(null, true);
@@ -37,10 +30,10 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
     preflightContinue: false,
     optionsSuccessStatus: 204
-}));
+};
 
-// Explicitly handle all OPTIONS requests globally
-app.options('*', cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());
