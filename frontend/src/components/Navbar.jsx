@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { Sun, Moon, LogOut, User as UserIcon, LayoutDashboard, Utensils, Dumbbell, Calendar, Settings, Home } from 'lucide-react';
+import Logo from './Logo';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -10,8 +11,8 @@ const Navbar = () => {
   return (
     <nav className="glass sticky top-0 z-50 px-6 py-4 flex items-center justify-between transition-all duration-300">
       <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
-        <Link to="/" className="text-3xl font-black bg-gradient-to-r from-[var(--primary)] to-emerald-400 bg-clip-text text-transparent tracking-tighter hover:scale-105 transition-transform">
-          FitLife AI
+        <Link to="/" className="hover:scale-105 transition-transform">
+          <Logo />
         </Link>
 
         <div className="flex items-center space-x-3 md:space-x-5">

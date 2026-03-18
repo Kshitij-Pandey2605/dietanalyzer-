@@ -4,7 +4,8 @@ import {
     getDietPlan, 
     createDietPlan, 
     updateDietPlan, 
-    deleteDietPlan 
+    deleteDietPlan,
+    regenerateMeal
 } from '../controllers/dietController.js';
 
 const router = express.Router();
@@ -12,6 +13,9 @@ const router = express.Router();
 router.route('/')
     .get(protect, getDietPlan)
     .post(protect, createDietPlan);
+
+router.route('/regenerate/:mealType')
+    .put(protect, regenerateMeal);
 
 router.route('/:id')
     .put(protect, updateDietPlan)

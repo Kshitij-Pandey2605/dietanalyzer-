@@ -8,11 +8,21 @@ const mealSchema = new mongoose.Schema({
     fats: Number,
 });
 
+const mealOptionSchema = new mongoose.Schema({
+    selected: mealSchema,
+    alternatives: [mealSchema]
+});
+
 const dietPlanSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User',
+    },
+    date: {
+        type: Date,
+        required: true,
+        default: Date.now
     },
     goal: {
         type: String,
@@ -23,10 +33,10 @@ const dietPlanSchema = new mongoose.Schema({
         enum: ['Vegetarian', 'Non-Vegetarian'],
     },
     focus: String,
-    breakfast: mealSchema,
-    lunch: mealSchema,
-    dinner: mealSchema,
-    snacks: mealSchema,
+    breakfast: mealOptionSchema,
+    lunch: mealOptionSchema,
+    dinner: mealOptionSchema,
+    snacks: mealOptionSchema,
     totalCalories: Number,
 }, { timestamps: true });
 

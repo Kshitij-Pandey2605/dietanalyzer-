@@ -1,55 +1,6 @@
 import DietPlan from '../models/DietPlan.js';
 import User from '../models/User.js';
-
-// Helper function
-const generateDietPlanLogic = (goal, category, preference) => {
-    let plan = {};
-    const isVeg = preference === 'Vegetarian';
-
-    if (goal === 'Lose Fat') {
-        plan = {
-            breakfast: isVeg 
-                ? { name: 'Paneer Bhurji with 1 Brown Bread', calories: 300, protein: 18, carbs: 25, fats: 14 }
-                : { name: 'Oatmeal with Berries', calories: 350, protein: 12, carbs: 55, fats: 8 },
-            lunch: isVeg
-                ? { name: 'Lentil Soup with Quinoa Salad', calories: 400, protein: 20, carbs: 50, fats: 12 }
-                : { name: 'Grilled Chicken Salad', calories: 450, protein: 40, carbs: 15, fats: 20 },
-            dinner: isVeg
-                ? { name: 'Roasted Tofu with Sautéed Veggies', calories: 350, protein: 22, carbs: 15, fats: 18 }
-                : { name: 'Baked Salmon with Asparagus', calories: 400, protein: 35, carbs: 10, fats: 22 },
-            snacks: { name: 'Greek Yogurt or Roasted Chickpeas', calories: 150, protein: 15, carbs: 10, fats: 2 },
-            focus: 'Calorie Deficit & High Protein',
-            totalCalories: isVeg ? 1200 : 1350
-        };
-    } else if (goal === 'Gain Muscle') {
-        plan = {
-            breakfast: isVeg
-                ? { name: 'Soya Chunk Stir-fry & Avocado Toast', calories: 500, protein: 30, carbs: 45, fats: 20 }
-                : { name: 'Scrambled Eggs & Avocado Toast', calories: 550, protein: 25, carbs: 45, fats: 30 },
-            lunch: isVeg
-                ? { name: 'Paneer Tikka with Brown Rice/Dal', calories: 650, protein: 35, carbs: 70, fats: 25 }
-                : { name: 'Chicken, Rice and Broccoli', calories: 700, protein: 45, carbs: 80, fats: 15 },
-            dinner: isVeg
-                ? { name: 'Chickpea Curry with 2 Rotis', calories: 600, protein: 25, carbs: 80, fats: 15 }
-                : { name: 'Beef Stir Fry with Noodles', calories: 650, protein: 40, carbs: 70, fats: 20 },
-            snacks: { name: 'Protein Shake and Banana', calories: 300, protein: 30, carbs: 40, fats: 5 },
-            focus: 'Calorie Surplus & High Protein/Carbs',
-            totalCalories: isVeg ? 2050 : 2200
-        };
-    } else {
-        plan = {
-            breakfast: { name: 'Fruit Smoothie Bowl', calories: 400, protein: 10, carbs: 70, fats: 10 },
-            lunch: isVeg
-                ? { name: 'Moong Dal Khichdi with Veggies', calories: 450, protein: 18, carbs: 65, fats: 10 }
-                : { name: 'Quinoa Bowl with Roasted Veggies', calories: 500, protein: 18, carbs: 65, fats: 18 },
-            dinner: { name: 'Lentil Soup with Whole Grain Bread', calories: 450, protein: 22, carbs: 60, fats: 12 },
-            snacks: { name: 'Almonds and Apple', calories: 200, protein: 6, carbs: 20, fats: 14 },
-            focus: 'Balanced Nutrition & Maintenance',
-            totalCalories: isVeg ? 1500 : 1550
-        };
-    }
-    return plan;
-};
+import { generateDietPlanLogic } from '../utils/dietDataUtils.js';
 
 // @desc    Generate or Get current Diet Plan
 // @route   GET /api/diet
@@ -57,10 +8,20 @@ const generateDietPlanLogic = (goal, category, preference) => {
 export const getDietPlan = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
-        let dietPlan = await DietPlan.findOne({ user: req.user._id }).sort({ createdAt: -1 });
+        
+        // Match today's date
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
 
+        let dietPlan = await DietPlan.findOne({ 
+            user: req.user._id,
+            date: { $gte: startOfDay, $lte: endOfDay }
+        });
+
+        // Generate a new one if it doesn't exist for today or if settings changed
         if (!dietPlan || dietPlan.goal !== user.fitnessGoal || dietPlan.dietPreference !== user.dietPreference) {
-            // Generate a new one if it doesn't exist or if settings changed
             if (!user.fitnessGoal) {
                 return res.status(400).json({ message: 'Please complete your profile first' });
             }
@@ -72,10 +33,66 @@ export const getDietPlan = async (req, res) => {
             
             dietPlan = await DietPlan.create({
                 user: req.user._id,
+                date: new Date(),
                 goal: user.fitnessGoal,
                 dietPreference: user.dietPreference,
                 ...rawPlan
             });
+        }
+
+        res.json(dietPlan);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Regenerate a specific meal type
+// @route   PUT /api/diet/regenerate/:mealType
+// @access  Private
+export const regenerateMeal = async (req, res) => {
+    try {
+        const { mealType } = req.params; // 'breakfast', 'lunch', 'dinner', 'snacks'
+        
+        // Find today's plan
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
+
+        let dietPlan = await DietPlan.findOne({ 
+            user: req.user._id,
+            date: { $gte: startOfDay, $lte: endOfDay }
+        });
+
+        if (!dietPlan) {
+            return res.status(404).json({ message: 'No diet plan found for today' });
+        }
+
+        if (!['breakfast', 'lunch', 'dinner', 'snacks'].includes(mealType)) {
+            return res.status(400).json({ message: 'Invalid meal type' });
+        }
+
+        const currentMealData = dietPlan[mealType];
+        
+        if (currentMealData.alternatives && currentMealData.alternatives.length > 0) {
+            // Swap selected with the first alternative, and push the old selected to the end of alternatives
+            const oldSelected = currentMealData.selected;
+            const newSelected = currentMealData.alternatives[0];
+            const newAlternatives = [...currentMealData.alternatives.slice(1), oldSelected];
+
+            dietPlan[mealType] = {
+                selected: newSelected,
+                alternatives: newAlternatives
+            };
+
+            // Recalculate total calories
+            dietPlan.totalCalories = 
+                dietPlan.breakfast.selected.calories + 
+                dietPlan.lunch.selected.calories + 
+                dietPlan.dinner.selected.calories + 
+                dietPlan.snacks.selected.calories;
+
+            await dietPlan.save();
         }
 
         res.json(dietPlan);
@@ -93,6 +110,7 @@ export const createDietPlan = async (req, res) => {
         
         const dietPlan = await DietPlan.create({
             user: req.user._id,
+            date: new Date(),
             goal,
             focus,
             breakfast,
@@ -119,7 +137,6 @@ export const updateDietPlan = async (req, res) => {
             return res.status(404).json({ message: 'Diet Plan not found' });
         }
 
-        // Make sure user owns the plan
         if (dietPlan.user.toString() !== req.user._id.toString()) {
             return res.status(401).json({ message: 'Not authorized' });
         }

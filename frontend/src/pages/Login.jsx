@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, UserCheck, ChevronRight } from 'lucide-react';
+import Logo from '../components/Logo';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -34,8 +35,8 @@ const Login = () => {
       <div className="w-full max-w-md">
         <div className="premium-card p-10 glass dark:glass-dark shadow-2xl shadow-[var(--primary)]/5">
           <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[var(--primary)] to-emerald-600 rounded-2xl mb-6 shadow-lg text-white">
-              <UserCheck size={32} />
+            <div className="flex justify-center mb-6">
+              <Logo className="scale-125 transform origin-center" />
             </div>
             <h2 className="text-4xl font-black text-[var(--foreground)] tracking-tight">Access Portal</h2>
             <p className="text-[var(--muted-foreground)] mt-2 font-medium">Re-engage with your evolution</p>

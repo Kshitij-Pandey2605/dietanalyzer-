@@ -11,6 +11,7 @@ import {
   Droplet, 
   Target
 } from 'lucide-react';
+import Logo from '../components/Logo';
 
 const motivationalQuotes = [
   "The only bad workout is the one that didn't happen.",
@@ -95,6 +96,7 @@ const Dashboard = () => {
     <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="animate-in fade-in slide-in-from-left duration-500">
+          <Logo className="mb-2 scale-90 origin-left" />
           <h1 className="text-4xl font-extrabold text-[var(--foreground)]">Fitness Dashboard</h1>
           <p className="text-[var(--muted-foreground)] mt-1">{getGreeting()}! Here's your health summary.</p>
         </div>

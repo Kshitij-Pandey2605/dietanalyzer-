@@ -17,9 +17,15 @@ const updateDietPlan = async (id, data) => {
     return response.data;
 };
 
+const regenerateMeal = async (mealType) => {
+    const response = await api.put(`${API_URL}/regenerate/${mealType}`);
+    return response.data;
+};
+
 const dietService = {
   getDietPlan,
-  updateDietPlan
+  updateDietPlan,
+  regenerateMeal
 };
 
 export default dietService;
